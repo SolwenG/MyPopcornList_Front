@@ -1,6 +1,6 @@
 {
     "name": "mypopcornlist_front",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Front part of the app MyPopcornList",
     "type": "module",
     "private": true,
@@ -26,9 +26,18 @@
         "vue-router": "^4.0.12"
     },
     "devDependencies": {
+        "@babel/plugin-syntax-jsx": "^7.27.1",
+        "@babel/plugin-transform-modules-commonjs": "^7.27.1",
+        "@babel/preset-env": "^7.27.1",
         "@eslint/js": "^9.19.0",
+        "@pinia/testing": "^1.0.1",
         "@quasar/app-vite": "^2.0.8",
+        "@vue/babel-plugin-jsx": "^1.4.0",
+        "@vue/babel-preset-jsx": "^1.4.0",
+        "@vue/test-utils": "^2.4.0-alpha.2",
+        "@vue/vue3-jest": "^29.2.6",
         "autoprefixer": "^10.4.2",
+        "babel-jest": "^29.7.0",
         "eslint": "^9.19.0",
         "eslint-config-prettier": "^10.0.1",
         "eslint-plugin-import": "^2.31.0",
@@ -37,26 +46,66 @@
         "eslint-plugin-vue": "^9.32.0",
         "globals": "^15.14.0",
         "jest": "^29.7.0",
+        "jest-environment-jsdom": "^29.7.0",
         "prettier": "^3.3.3",
         "vite-plugin-checker": "^0.8.0"
     },
     "jest": {
+        "testEnvironment": "jsdom",
         "moduleFileExtensions": [
-            "js"
+            "js",
+            "json",
+            "vue"
         ],
+        "testRegex": ".*\\.(spec)\\.(js)$",
+        "moduleNameMapper": {
+            "^@/(.*)$": "<rootDir>/src/$1",
+            "^src/(.*)$": "<rootDir>/src/$1",
+            "^app/(.*)$": "<rootDir>/$1",
+            "^components/(.*)$": "<rootDir>/src/components/$1",
+            "^layouts/(.*)$": "<rootDir>/src/layouts/$1",
+            "^pages/(.*)$": "<rootDir>/src/pages/$1",
+            "^assets/(.*)$": "<rootDir>/src/assets/$1",
+            "^stores/(.*)$": "<rootDir>/src/stores/$1",
+            "^boot/(.*)$": "<rootDir>/src/boot/$1",
+            "^#q-app/wrappers$": "<rootDir>/src/tests/__mocks__/qAppWrappers.js",
+            "^src/config/env.js$": "<rootDir>/src/tests/__mocks__/env.js",
+            "^src/services/(.*)$": "<rootDir>/src/services/$1",
+            "\\.(css|less|scss|sass)$": "<rootDir>/src/tests/__mocks__/styleMock.js"
+        },
         "modulePaths": [
-            "<rootDir>"
+            "<rootDir>",
+            "<rootDir>/src",
+            "<rootDir>/src/components",
+            "<rootDir>/src/tests"
         ],
-        "roots": [
-            "src"
+        "transform": {
+            "^.+\\.js$": [
+                "babel-jest",
+                {
+                    "configFile": "./babel.config.cjs"
+                }
+            ],
+            "^.+\\.vue$": "@vue/vue3-jest"
+        },
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/tests/setup.js"
         ],
-        "testRegex": ".*\\.test\\.js$",
-        "coverageDirectory": "coverage",
+        "collectCoverage": true,
         "collectCoverageFrom": [
-            "src/libs/**/*.js",
-            "src/stores/**/*.js"
+            "<rootDir>/src/**/*.{js,vue}",
+            "!**/node_modules/**",
+            "!<rootDir>/src/tests/**"
         ],
-        "testEnvironment": "node"
+        "transformIgnorePatterns": [
+            "/node_modules/(?!quasar|@quasar|@babel|@vue)"
+        ],
+        "testEnvironmentOptions": {
+            "customExportConditions": [
+                "node",
+                "node-addons"
+            ]
+        }
     },
     "browserslist": [
         "> 1%",

@@ -2,12 +2,13 @@ import { defineBoot } from '#q-app/wrappers'
 import axios from 'axios'
 import { LocalStorage } from 'quasar'
 import { useAuthStore } from '../stores/auth'
+import { VITE_TMDB_ACCESS_TOKEN } from 'src/config/env.js'
 
 // Create API instances for each service
 const tmdbApi = axios.create({
     baseURL: 'https://api.themoviedb.org/3',
     headers: {
-        Authorization: `Bearer ${import.meta.env.VITE_TMDB_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${VITE_TMDB_ACCESS_TOKEN}`,
         accept: 'application/json'
     }
 })
