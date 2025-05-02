@@ -59,4 +59,4 @@ export default defineBoot(({ app }) => {
     app.config.globalProperties.$backendApi = backendApi
 })
 
-export { tmdbApi, anilistApi, backendApi }
+export { axios, tmdbApi, anilistApi, backendApi }
