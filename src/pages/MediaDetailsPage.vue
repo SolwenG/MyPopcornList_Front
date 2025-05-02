@@ -171,71 +171,70 @@ const fetchMediaDetails = async () => {
         let response
 
         switch (props.type) {
-            case 'movie': {
+            case 'movie':
                 response = await tmdbApi.get(`/movie/${props.id}`)
-                media.value = {
-                    id: response.data.id,
-                    type: 'movie',
-                    title: response.data.title,
-                    overview: response.data.overview,
-                    posterPath: `https://image.tmdb.org/t/p/w500${response.data.poster_path}`,
-                    year: new Date(response.data.release_date).getFullYear(),
-                    runtime: response.data.runtime,
-                    voteAverage: response.data.vote_average,
-                    voteCount: response.data.vote_count,
-                    genres: response.data.genres
-                }
-                console.log('movie', response.data)
                 break
-            }
-
-            case 'tv': {
+            case 'tv':
+            case 'cartoon':
                 response = await tmdbApi.get(`/tv/${props.id}`)
-                media.value = {
-                    id: response.data.id,
-                    type: 'tv',
-                    title: response.data.name,
-                    overview: response.data.overview,
-                    posterPath: `https://image.tmdb.org/t/p/w500${response.data.poster_path}`,
-                    year: new Date(response.data.first_air_date).getFullYear(),
-                    numberOfSeasons: response.data.number_of_seasons,
-                    numberOfEpisodes: response.data.number_of_episodes,
-                    voteAverage: response.data.vote_average,
-                    voteCount: response.data.vote_count,
-                    genres: response.data.genres
-                }
                 break
-            }
-
             case 'anime': {
                 response = await anilistApi.post('', {
                     query: `
-                                query ($id: Int) {
-                                    Media(id: $id, type: ANIME) {
-                                        id
-                                        title {
-                                            romaji
-                                            english
-                                        }
-                                        description
-                                        coverImage {
-                                            large
-                                        }
-                                        startDate {
-                                            year
-                                        }
-                                        episodes
-                                        duration
-                                        averageScore
-                                        popularity
-                                        genres
-                                    }
+                        query ($id: Int) {
+                            Media(id: $id, type: ANIME) {
+                                id
+                                title {
+                                    romaji
+                                    english
                                 }
-                            `,
-                    variables: {
-                        id: Number(props.id)
-                    }
+                                description
+                                coverImage {
+                                    large
+                                }
+                                startDate {
+                                    year
+                                }
+                                episodes
+                                duration
+                                averageScore
+                                popularity
+                                genres
+                            }
+                        }
+                    `,
+                    variables: { id: Number(props.id) }
                 })
+                break
+            }
+        }
+
+        const commonData = {
+            id: response.data.id,
+            title: response.data.name,
+            overview: response.data.overview,
+            posterPath: `https://image.tmdb.org/t/p/w500${response.data.poster_path}`,
+            year: response.data.release_date
+                ? new Date(response.data.release_date).getFullYear()
+                : new Date(response.data.first_air_date).getFullYear(),
+            voteAverage: response.data.vote_average,
+            voteCount: response.data.vote_count,
+            genres: response.data.genres
+        }
+
+        switch (props.type) {
+            case 'movie':
+                media.value = { ...commonData, runtime: response.data.runtime }
+                break
+            case 'tv':
+            case 'cartoon':
+                media.value = {
+                    ...commonData,
+                    numberOfSeasons: response.data.number_of_seasons,
+                    numberOfEpisodes: response.data.number_of_episodes
+                }
+                break
+            case 'anime': {
                 const animeData = response.data.data.Media
                 media.value = {
                     id: animeData.id,
@@ -249,24 +248,6 @@ const fetchMediaDetails = async () => {
                     voteAverage: animeData.averageScore / 10,
                     voteCount: animeData.popularity,
                     genres: animeData.genres.map(genre => ({ name: genre }))
-                }
-                break
-            }
-
-            case 'cartoon': {
-                response = await tmdbApi.get(`/tv/${props.id}`)
-                media.value = {
-                    id: response.data.id,
-                    type: 'cartoon',
-                    title: response.data.name,
-                    overview: response.data.overview,
-                    posterPath: `https://image.tmdb.org/t/p/w500${response.data.poster_path}`,
-                    year: new Date(response.data.first_air_date).getFullYear(),
-                    numberOfSeasons: response.data.number_of_seasons,
-                    numberOfEpisodes: response.data.number_of_episodes,
-                    voteAverage: response.data.vote_average,
-                    voteCount: response.data.vote_count,
-                    genres: response.data.genres
                 }
                 break
             }
@@ -286,39 +267,22 @@ const fetchMediaDetails = async () => {
 
 const toggleFavorite = async () => {
     try {
-        await userStore.toggleFavorite({
-            id: Number(props.id),
-            type: props.type,
-            ...media.value
-        })
-        notify({
-            color: 'positive',
-            message: isFavorite.value ? 'Retiré des favoris' : 'Ajouté aux favoris',
-            icon: isFavorite.value ? 'fas fa-heart' : 'far fa-heart'
-        })
-    } catch (error) {
-        notify({
-            color: 'negative',
-            message: 'Erreur lors de la modification des favoris',
-            icon: 'error'
-        })
-        console.error(error)
+        if (isFavorite.value) {
+            await userStore.removeFavorite(media.value)
+        } else {
+            await userStore.addFavorite(media.value)
+        }
+    } catch (err) {
+        console.error('Error updating favorites:', err)
+        error.value = "Erreur lors de l'ajout à mes favoris"
+        notify({ color: 'negative', message: "Erreur lors de l'ajout à mes favoris", icon: 'error' })
     }
 }
 
 const toggleMediaInList = async list => {
     try {
-        if (!userStore.isMediaInList(list.id, Number(props.id))) {
-            await userStore.addMediaToList(list.id, {
-                id: Number(props.id),
-                type: props.type,
-                ...media.value
-            })
-            notify({
-                color: 'positive',
-                message: `Ajouté à la liste "${list.name}"`,
-                icon: 'check'
-            })
+        if (list.hasMedia) {
+            userStore.addMediaToList(list.id, media.value)
         } else {
             await userStore.removeMediaFromList(list.id, Number(props.id))
             notify({
@@ -337,13 +301,13 @@ const toggleMediaInList = async list => {
     }
 }
 
-const createNewList = async () => {
+const createNewList = () => {
     $q.dialog({
-        title: 'Nouvelle liste',
-        message: 'Nom de la liste:',
+        title: 'Créer une nouvelle liste',
         prompt: {
             model: '',
-            type: 'text'
+            type: 'text',
+            placeholder: 'Nom de la liste'
         },
         cancel: true,
         persistent: true

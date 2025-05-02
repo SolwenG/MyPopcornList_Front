@@ -69,30 +69,3 @@ export const tmdbService = {
         return response.data
     }
 }
-
-// const [keywordResults, genreResult] = await Promise.all([
-//     tmdbApi.get('/discover/tv', {
-//         params: {
-//             with_keywords: 6513, // cartoons
-//             sort_by: 'vote_average.desc',
-//         'vote_count.gte': 200
-//     }
-//  }),
-//     tmdbApi.get('/discover/tv', {
-//         params: {
-//             with_genres: 16, // animation
-//             sort_by: 'vote_average.desc',
-//             'vote_count.gte': 200
-//         }
-//     })
-// ])
-// const cartoons = [...keywordResults.data.results, ...genreResult.data.results]
-
-// const cartoons = await tmdbApi.get('/discover/tv', {
-//     params: {
-//         with_keywords: 6513, // cartoons
-//         // with_genres: 16, // animation
-//         sort_by: 'vote_average.desc',
-//         'vote_count.gte': 200
-//     }
-// })

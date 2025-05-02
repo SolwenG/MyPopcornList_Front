@@ -16,7 +16,7 @@ export default {
     topmovies: 'Top Films',
     topseries: 'Top Séries',
     topanime: 'Top Animés',
-    topcartoon: 'Top Cartoons',
+    topcartoons: 'Top Cartoons',
     trending: 'Populaire en ce moment',
     recommendations: 'Recommandations',
     favorites: 'Favoris',

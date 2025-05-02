@@ -1,0 +1,47 @@
+name: Frontend CI Pipeline
+
+on:
+    push:
+        branches: ['*']
+    pull_request:
+        branches: ['main', 'develop']
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: 'npm'
+
+            - name: Install Quasar CLI globally
+              run: npm install -g @quasar/cli
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Run tests
+              run: npm run test
+              env:
+                  NODE_ENV: test
+
+            - name: Build application
+              run: quasar build
+              env:
+                  NODE_ENV: production
+
+            - name: Cache build artifacts
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      dist
+                      .quasar
+                  key: ${{ runner.os }}-build-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-build-

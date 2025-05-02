@@ -113,7 +113,6 @@ const activeTab = ref('overview')
 const listTab = ref('all')
 const favoriteTab = ref('all')
 
-// Sample data - replace with real data from your store
 const showcases = ref([
     {
         title: 'Titre de la vitrine',
@@ -144,7 +143,6 @@ const favoriteItems = ref([
 const profile = ref(null)
 
 const fetchProfileData = id => {
-    // Logic to fetch profile data by ID
     axios
         .get(`/api/profiles/${id}`)
         .then(response => {
