@@ -1,4 +1,4 @@
-name: Frontend CI/CD Pipeline
+name: Frontend CI Pipeline
 
 on:
     push:
@@ -17,13 +17,14 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                  node-version: '18'
+                  node-version: '22'
                   cache: 'npm'
 
+            - name: Install Quasar CLI globally
+              run: npm install -g @quasar/cli
+
             - name: Install dependencies
-              run: |
-                  npm install -g @quasar/cli
-                  npm ci
+              run: npm ci
 
             - name: Run tests
               run: npm run test
