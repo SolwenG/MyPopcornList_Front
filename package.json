@@ -8,9 +8,10 @@
         "dev": "quasar dev",
         "lint": "eslint -c eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
         "prettier": "prettier --write \"**/*.{js,vue,scss,html,md,json}\" --ignore-path .gitignore",
-        "test": "jest",
+        "test": "jest --runInBand",
         "cov": "jest --coverage",
         "build": "quasar build",
+        "sonar": "npm run cov && docker compose -f sonarqube/docker-compose.yaml up --build sonar-scannercicd",
         "postinstall": "quasar prepare"
     },
     "dependencies": {
@@ -80,11 +81,15 @@
         "setupFilesAfterEnv": [
             "<rootDir>/src/tests/setup.js"
         ],
-        "collectCoverage": true,
         "collectCoverageFrom": [
             "<rootDir>/src/**/*.{js,vue}",
             "!**/node_modules/**",
             "!<rootDir>/src/tests/**"
+        ],
+        "coverageDirectory": "<rootDir>/.coverage",
+        "coverageReporters": [
+            "lcov",
+            "text-summary"
         ],
         "transformIgnorePatterns": [
             "/node_modules/(?!quasar|@quasar|@babel|@vue)"

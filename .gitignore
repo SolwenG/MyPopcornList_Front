@@ -32,6 +32,8 @@ yarn-error.log*
 # local .env files
 .env
 
-coverage/
+.coverage
 *.lcov
 *.log
+.qodo
+.vscode
