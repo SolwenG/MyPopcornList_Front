@@ -1,0 +1,6 @@
+# For Production
+services:
+    frontend:
+        image: ghcr.io/solweng/mypopcornlist_front:latest
+        ports:
+            - "80:80"
