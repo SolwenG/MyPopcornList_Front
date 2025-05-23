@@ -1,7 +1,7 @@
 <template>
-    <div class="media-card" @click="goToMedia" style="cursor: pointer">
+    <div class="media-card" style="cursor: pointer" @click="goToMedia">
         <div class="media-poster">
-            <q-img :src="posterUrl" class="rounded-borders" height="100%" width="100%" fit="cover">
+            <q-img :src="posterUrl" class="rounded-borders" fit="cover" height="100%" width="100%">
                 <template #error>
                     <div class="absolute-full flex flex-center bg-secondary text-dark">{{ mediaTitle }}</div>
                 </template>
@@ -13,8 +13,8 @@
             </div>
             <div class="row items-center justify-between q-mt-xs">
                 <div class="text-caption text-grey">{{ mediaYear }}</div>
-                <div v-if="mediaRating" class="row items-center" :title="$t('rating')">
-                    <q-icon name="star" color="yellow" size="xs" />
+                <div v-if="mediaRating" :title="$t('rating')" class="row items-center">
+                    <q-icon color="amber" name="star" size="xs" />
                     <span class="q-ml-xs text-caption">{{ mediaRating }}</span>
                 </div>
             </div>
@@ -22,7 +22,7 @@
     </div>
 </template>
 
-<script setup lang="js">
+<script lang="js" setup>
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 

@@ -19,26 +19,28 @@
                 </div>
 
                 <!-- Media Info -->
-                <div class="col-12 col-sm-8 col-md-9">
-                    <q-btn
-                        v-if="isLogged"
-                        :color="isFavorite ? 'red' : 'accent'"
-                        :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'"
-                        class="absolute-top-right q-ma-sm"
-                        dense
-                        flat
-                        round
-                        @click.stop="toggleFavorite"
-                    />
-                    <h1 class="text-h3 q-mt-none">{{ media.title }}</h1>
+                <div class="col-12 col-sm-8 col-md-9 text-dark">
+                    <div class="row items-center q-gutter-x-md q-mb-md">
+                        <q-icon
+                            :icon="isFavorite ? 'fas fa-heart' : 'far fa-heart'"
+                            class="cursor-pointer"
+                            color="red"
+                            size="2em"
+                            @click="toggleFavorite"
+                        />
+                        <h2 class="text-h4 q-mt-none">{{ media.title }}</h2>
+                    </div>
                     <div class="row items-center q-gutter-x-md q-mb-md">
                         <span class="text-h6">{{ media.year }}</span>
                         <q-rating
                             v-if="media.voteAverage"
                             v-model="media.voteAverage"
-                            color="yellow"
+                            color="amber"
+                            color-half="amber"
                             icon="star_border"
+                            icon-half="star_half"
                             icon-selected="star"
+                            max="5"
                             readonly
                             size="2em"
                         />
@@ -48,41 +50,41 @@
 
                     <div class="row q-col-gutter-md">
                         <div class="col-12 col-md-6">
-                            <h2 class="text-h6">Détails</h2>
+                            <h2 class="text-h6">{{ $t('details') }}</h2>
                             <q-list>
                                 <q-item v-if="media.genres">
                                     <q-item-section>
-                                        <q-item-label caption>Genres</q-item-label>
+                                        <q-item-label caption>{{ $t('genre') }}</q-item-label>
                                         <q-item-label>{{ media.genres.map(genre => genre.name).join(', ') }} </q-item-label>
                                     </q-item-section>
                                 </q-item>
                                 <q-item v-if="media.runtime">
                                     <q-item-section>
-                                        <q-item-label caption>Durée</q-item-label>
+                                        <q-item-label caption>{{ $t('runtime') }}</q-item-label>
                                         <q-item-label>{{ media.runtime }} min</q-item-label>
                                     </q-item-section>
                                 </q-item>
                                 <q-item v-if="media.numberOfSeasons">
                                     <q-item-section>
-                                        <q-item-label caption>Saisons</q-item-label>
+                                        <q-item-label caption>{{ $t('season') }}</q-item-label>
                                         <q-item-label>{{ media.numberOfSeasons }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
                                 <q-item v-if="media.numberOfEpisodes">
                                     <q-item-section>
-                                        <q-item-label caption>Épisodes</q-item-label>
+                                        <q-item-label caption>{{ $t('episodes') }}</q-item-label>
                                         <q-item-label>{{ media.numberOfEpisodes }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
                                 <q-item v-if="media.episodes">
                                     <q-item-section>
-                                        <q-item-label caption>Épisodes</q-item-label>
+                                        <q-item-label caption>{{ $t('episodes') }}</q-item-label>
                                         <q-item-label>{{ media.episodes }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
                                 <q-item v-if="media.duration">
                                     <q-item-section>
-                                        <q-item-label caption>Durée</q-item-label>
+                                        <q-item-label caption>{{ $t('runtime') }}</q-item-label>
                                         <q-item-label>{{ media.duration }}</q-item-label>
                                     </q-item-section>
                                 </q-item>
@@ -92,7 +94,7 @@
                         <div class="col-12 col-md-6">
                             <q-btn
                                 v-if="isLogged"
-                                :label="userLists.length ? 'Modifier dans mes listes' : 'Ajouter à ma liste'"
+                                :label="userLists.length ? $t('update_lists') : $t('add_to_lists')"
                                 class="q-mt-sm"
                                 color="primary"
                                 dense
@@ -102,7 +104,7 @@
                             <q-menu ref="listMenu" :offset="[0, 8]">
                                 <q-list style="min-width: 200px">
                                     <q-item-label header>
-                                        {{ userLists.length ? 'Modifier dans mes listes' : 'Ajouter à mes listes' }}
+                                        {{ userLists.length ? $t('update_lists') : $t('add_to_lists') }}
                                     </q-item-label>
                                     <q-item v-for="list in userLists" :key="list.id" v-close-popup clickable>
                                         <q-item-section>
@@ -211,7 +213,7 @@ const fetchMediaDetails = async () => {
 
         const commonData = {
             id: response.data.id,
-            title: response.data.name,
+            title: response.data.title,
             overview: response.data.overview,
             posterPath: `https://image.tmdb.org/t/p/w500${response.data.poster_path}`,
             year: response.data.release_date
@@ -221,6 +223,7 @@ const fetchMediaDetails = async () => {
             voteCount: response.data.vote_count,
             genres: response.data.genres
         }
+        console.log(response.data)
 
         switch (props.type) {
             case 'movie':
@@ -274,7 +277,6 @@ const toggleFavorite = async () => {
         }
     } catch (err) {
         console.error('Error updating favorites:', err)
-        error.value = "Erreur lors de l'ajout à mes favoris"
         notify({ color: 'negative', message: "Erreur lors de l'ajout à mes favoris", icon: 'error' })
     }
 }

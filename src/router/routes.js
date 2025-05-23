@@ -36,11 +36,6 @@ const routes = [
                 props: true
             },
             {
-                path: '/search',
-                name: 'SearchResults',
-                component: () => import('pages/SearchResultsPage.vue')
-            },
-            {
                 path: '/profile',
                 name: 'Profile',
                 component: () => import('pages/ProfilePage.vue')

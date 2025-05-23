@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="showDialog" position="top" :maximized="false">
+    <q-dialog v-model="showDialog" :maximized="false" position="top">
         <q-card class="search-modal-card">
             <q-card-section>
                 <div class="row items-center">
@@ -7,19 +7,19 @@
                         <q-input
                             v-model="localQuery"
                             :loading="loading"
+                            :placeholder="$t('search')"
                             autofocus
                             borderless
                             class="text-h6"
                             dense
-                            placeholder="Chercher un média"
                             @keyup.enter="handleSearch"
                         >
                             <template #append>
-                                <q-icon name="search" color="primary" @click="handleSearch" />
+                                <q-icon color="primary" name="search" @click="handleSearch" />
                             </template>
                         </q-input>
                     </div>
-                    <q-btn flat round dense icon="close" color="negative" v-close-popup />
+                    <q-btn v-close-popup color="negative" dense flat icon="close" round />
                 </div>
             </q-card-section>
 
@@ -30,12 +30,12 @@
                     <q-spinner color="primary" size="3em" />
                 </div>
                 <div v-else-if="error" class="text-center q-pa-md">
-                    <q-icon name="error" color="negative" size="3em" />
+                    <q-icon color="negative" name="error" size="3em" />
                     <p class="text-h6 text-negative">{{ error }}</p>
                 </div>
                 <div v-else-if="results.length === 0 && localQuery" class="text-center q-pa-md">
-                    <q-icon name="search_off" color="grey" size="3em" />
-                    <p class="text-h6 text-grey">Aucun résultat trouvé pour "{{ localQuery }}"</p>
+                    <q-icon color="grey" name="search_off" size="3em" />
+                    <p class="text-h6 text-grey">{{ $t('no_results_for') }} {{ localQuery }}"</p>
                 </div>
                 <div v-else-if="results.length > 0" class="row q-col-gutter-md justify-center">
                     <div v-for="media in results" :key="media.id" class="col-auto">
@@ -47,7 +47,7 @@
     </q-dialog>
 </template>
 
-<script setup lang="js">
+<script lang="js" setup>
 import { ref, watch } from 'vue'
 import { tmdbApi } from 'boot/axios'
 import MediaCard from 'components/media/MediaCard.vue'

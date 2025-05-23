@@ -1,39 +1,39 @@
 <template>
     <q-page class="flex flex-center">
         <div class="forgot-password-container bg-secondary rounded-borders q-px-xl q-pb-sm">
-            <h2 class="text-center text-h4 text-dark q-mb-xl">MOT DE PASSE OUBLIÉ</h2>
-            <p class="text-dark text-center q-mb-lg">
-                Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
-            </p>
-            <q-form @submit="onSubmit" class="q-gutter-y-md">
+            <h2 class="text-center text-h4 text-uppercase text-dark q-mb-xl">{{ $t('password_forgotten') }}</h2>
+            <p class="text-dark text-center q-mb-lg">{{ $t('password_forgotten_instructions') }}</p>
+            <q-form class="q-gutter-y-md" @submit="onSubmit">
                 <q-input
                     v-model="email"
-                    :rules="[val => !!val || 'Email requis', val => /^[^@]+@[^@]+\.[^@]+$/.test(val) || 'Email invalide']"
-                    class="q-mb-lg"
-                    filled
+                    :rules="[val => !!val || $t('email_required'), val => /^[^@]+@[^@]+\.[^@]+$/.test(val) || $t('email_invalid')]"
                     bg-color="accent"
+                    class="q-mb-lg"
                     color="dark"
-                    label="Email"
+                    filled
+                    :label="$t('email')"
                     lazy-rules
                     type="email"
                 />
 
-                <q-btn class="full-width" color="primary" label="Envoyer le lien" size="lg" type="submit" />
+                <q-btn class="full-width" color="primary" :label="$t('send_reset_link')" size="lg" type="submit" />
 
                 <div class="text-center q-mt-lg">
-                    <q-btn flat color="primary" label="Retour à la connexion" to="/login" />
+                    <q-btn color="primary" flat :label="$t('back_to_login')" to="/login" />
                 </div>
             </q-form>
         </div>
     </q-page>
 </template>
 
-<script setup lang="js">
+<script lang="js" setup>
 import { ref } from 'vue'
 import { useAuthStore } from '../../stores/auth'
 import { useRouter } from 'vue-router'
 import { notify } from '../../utils/notify'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -44,7 +44,7 @@ const onSubmit = async () => {
         await authStore.forgotPassword(email.value)
         notify({
             color: 'positive',
-            message: 'Un email de réinitialisation a été envoyé !',
+            message: t('reset_email_sent'),
             icon: 'check'
         })
         router.push('/login')
@@ -52,7 +52,7 @@ const onSubmit = async () => {
         console.error('Forgot password error:', error)
         notify({
             color: 'negative',
-            message: 'Une erreur est survenue',
+            message: t('error_occurred'),
             icon: 'error'
         })
     }

@@ -3,18 +3,18 @@
         <q-page-sticky class="bg-secondary q-px-md" expand position="top" style="z-index: 1000">
             <h2 class="text-h4 text-bold text-dark q-my-none">TOP</h2>
             <q-space />
-            <div class="row items-center q-mb-sm bg-secondary rounded-borders q-pa-md" style="margin: 0 -16px">
+            <div class="row items-center bg-secondary rounded-borders q-pa-md" style="margin: 0 -16px">
                 <q-tabs v-model="tab" align="left" class="text-primary" dense indicator-color="primary" narrow-indicator>
                     <q-tab :label="$t('movies')" name="movies" />
                     <q-tab :label="$t('series')" name="series" />
-                    <q-tab :label="$t('anime')" name="anime" />
+                    <q-tab :label="$t('animes')" name="animes" />
                     <q-tab :label="$t('cartoons')" name="cartoons" />
                 </q-tabs>
             </div>
             <q-space />
-            <div class="row items-center justify-end q-mb-md">
-                <q-btn-dropdown color="primary" icon="sort" label="Trier">
-                    <q-list>
+            <div class="row items-center justify-end">
+                <q-btn-dropdown :label="$t('sort')" color="primary" dense icon="sort">
+                    <q-list dense>
                         <q-item v-for="sort in sortOptions" :key="sort.value" v-close-popup clickable @click="handleSort(sort)">
                             <q-item-section>
                                 <q-item-label>{{ sort.label }}</q-item-label>
@@ -40,7 +40,7 @@
                 <q-tab-panel name="movies">
                     <template v-for="(movie, index) in displayedMovies" :key="movie.id">
                         <media-ranking-item
-                            :animation-score="movie.animation_score || movie.vote_average * 8.7"
+                            :animation-score="movie.visual_score || movie.vote_average * 8.7"
                             :characters-score="movie.characters_score || movie.vote_average * 9.2"
                             :enjoyment-score="movie.enjoyment_score || movie.vote_average * 8.9"
                             :image-url="getImageUrl(movie.poster_path)"
@@ -60,7 +60,7 @@
                 <q-tab-panel name="series">
                     <template v-for="(series, index) in displayedSeries" :key="series.id">
                         <media-ranking-item
-                            :animation-score="series.animation_score || series.vote_average * 8.7"
+                            :animation-score="series.visual_score || series.vote_average * 8.7"
                             :characters-score="series.characters_score || series.vote_average * 9.2"
                             :enjoyment-score="series.enjoyment_score || series.vote_average * 8.9"
                             :image-url="getImageUrl(series.poster_path)"
@@ -80,7 +80,7 @@
                 <q-tab-panel name="anime">
                     <template v-for="(anime, index) in displayedAnime" :key="anime.id">
                         <media-ranking-item
-                            :animation-score="anime.animation_score || anime.averageScore * 0.87"
+                            :animation-score="anime.visual_score || anime.averageScore * 0.87"
                             :characters-score="anime.characters_score || anime.averageScore * 0.92"
                             :enjoyment-score="anime.enjoyment_score || anime.averageScore * 0.89"
                             :image-url="anime.coverImage.large"
@@ -100,7 +100,7 @@
                 <q-tab-panel name="cartoons">
                     <template v-for="(cartoon, index) in displayedCartoons" :key="cartoon.id">
                         <media-ranking-item
-                            :animation-score="cartoon.animation_score || cartoon.vote_average * 8.7"
+                            :animation-score="cartoon.visual_score || cartoon.vote_average * 8.7"
                             :characters-score="cartoon.characters_score || cartoon.vote_average * 9.2"
                             :enjoyment-score="cartoon.enjoyment_score || cartoon.vote_average * 8.9"
                             :image-url="getImageUrl(cartoon.poster_path)"
@@ -128,7 +128,7 @@
 
             <div v-if="hasMorePages" class="flex flex-center q-pa-md">
                 <q-btn :loading="loading" color="primary" text-color="white" @click="loadMoreItems">
-                    Charger plus
+                    {{ $t('load_more') }}
                     <template #loading>
                         <q-spinner-dots />
                     </template>
@@ -158,7 +158,7 @@ const createSortOptions = () => {
         { label: t('year'), value: 'year' },
         { label: t('title'), value: 'title' },
         { label: t('rating_scenario'), value: 'scenario_score' },
-        { label: t('rating_animation'), value: 'animation_score' },
+        { label: t('rating_visual'), value: 'visual_score' },
         { label: t('rating_enjoyment'), value: 'enjoyment_score' },
         { label: t('rating_characters'), value: 'characters_score' },
         { label: t('rating_music'), value: 'music_score' }
@@ -225,11 +225,6 @@ watch(
                 setupIntersectionObserver()
             } catch (error) {
                 console.error('Error loading media:', error)
-                notify({
-                    color: 'negative',
-                    message: 'Erreur lors du chargement des médias',
-                    icon: 'error'
-                })
             } finally {
                 loading.value = false
             }
@@ -339,7 +334,7 @@ const getScore = item => {
 
 const multipliers = {
     scenario_score: 10,
-    animation_score: 8.7,
+    visual_score: 8.7,
     enjoyment_score: 8.9,
     characters_score: 9.2,
     music_score: 9

@@ -80,7 +80,7 @@
                 <!-- Favorites Tab -->
                 <q-tab-panel name="favorites">
                     <q-tabs v-model="favoriteTab" align="left" class="text-primary">
-                        <q-tab :label="$t('topanime')" name="anime" />
+                        <q-tab :label="$t('topanimes')" name="animes" />
                         <q-tab :label="$t('topmovies')" name="movies" />
                         <q-tab :label="$t('topseries')" name="series" />
                         <q-tab :label="$t('topcartoons')" name="cartoons" />

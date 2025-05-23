@@ -1,41 +1,44 @@
 <template>
     <q-page class="flex flex-center">
         <div class="register-container bg-secondary rounded-borders q-px-xl q-pb-sm">
-            <h2 class="text-center text-h4 text-dark q-mb-xl">INSCRIPTION</h2>
-            <q-form @submit="onSubmit" class="q-gutter-y-md">
+            <h2 class="text-center text-h4 text-uppercase text-dark q-mb-lg">{{ $t('register') }}</h2>
+            <q-form class="q-gutter-y-sm" @submit="onSubmit">
                 <q-input
                     v-model="pseudo"
-                    :rules="[val => !!val || 'Pseudo requis']"
-                    class="q-mb-md"
-                    filled
+                    :label="$t('username')"
+                    :rules="[val => !!val || $t('username_required')]"
                     bg-color="accent"
+                    class="q-mb-md"
                     color="dark"
-                    label="Pseudo"
+                    filled
                     lazy-rules
                 />
 
                 <q-input
                     v-model="email"
-                    :rules="[val => !!val || 'Email requis', val => /^[^@]+@[^@]+\.[^@]+$/.test(val) || 'Email invalide']"
-                    class="q-mb-md"
-                    filled
+                    :label="$t('email')"
+                    :rules="[val => !!val || $t('email_required'), val => /^[^@]+@[^@]+\.[^@]+$/.test(val) || $t('email_invalid')]"
                     bg-color="accent"
+                    class="q-mb-md"
                     color="dark"
-                    label="Email"
+                    filled
                     lazy-rules
                     type="email"
                 />
 
                 <q-input
                     v-model="password"
-                    :rules="[val => !!val || 'Mot de passe requis', val => val.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères']"
-                    class="q-mb-md"
-                    filled
-                    bg-color="accent"
-                    color="dark"
-                    label="Mot De Passe"
-                    lazy-rules
+                    :label="$t('password')"
+                    :rules="[
+                        val => !!val || $t('password_required'),
+                        val => /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(val) || $t('password_rules')
+                    ]"
                     :type="isPwdVisible ? 'text' : 'password'"
+                    bg-color="accent"
+                    class="q-mb-md"
+                    color="dark"
+                    filled
+                    lazy-rules
                 >
                     <template #append>
                         <q-icon :name="isPwdVisible ? 'visibility' : 'visibility_off'" class="cursor-pointer" @click="isPwdVisible = !isPwdVisible" />
@@ -44,17 +47,18 @@
 
                 <q-input
                     v-model="confirmPassword"
+                    :label="$t('confirm_password')"
                     :rules="[
-                        val => !!val || 'Confirmation du mot de passe requise',
-                        val => val === password || 'Les mots de passe ne correspondent pas'
+                        val => !!val || $t('confirm_password_required'),
+                        val => val === password || $t('passwords_not_match'),
+                        val => /^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(val) || $t('password_rules')
                     ]"
-                    class="q-mb-lg"
-                    filled
-                    bg-color="accent"
-                    color="dark"
-                    label="Confirmer le mot de passe"
-                    lazy-rules
                     :type="isConfirmPwdVisible ? 'text' : 'password'"
+                    bg-color="accent"
+                    class="q-mb-sm"
+                    color="dark"
+                    filled
+                    lazy-rules
                 >
                     <template #append>
                         <q-icon
@@ -65,23 +69,25 @@
                     </template>
                 </q-input>
 
-                <q-btn class="full-width" color="primary" label="S'inscrire" size="lg" type="submit" />
+                <q-btn :label="$t('register')" class="full-width" color="primary" size="lg" type="submit" />
 
                 <div class="text-center q-mt-lg">
-                    <p class="text-dark q-mb-sm">Vous avez déjà un compte ?</p>
-                    <q-btn flat color="primary" label="Connectez-vous !" to="/login" />
+                    <p class="text-dark q-mb-xs">{{ $t('already_have_account') }}</p>
+                    <q-btn :label="$t('login_now')" color="primary" flat to="/login" />
                 </div>
             </q-form>
         </div>
     </q-page>
 </template>
 
-<script setup lang="js">
+<script lang="js" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../stores/auth'
 import { notify } from 'src/utils/notify'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -98,7 +104,7 @@ const onSubmit = async () => {
         if (success) {
             notify({
                 color: 'positive',
-                message: 'Inscription réussie !',
+                message: t('register_success'),
                 icon: 'check'
             })
             router.push('/')
@@ -113,7 +119,7 @@ const onSubmit = async () => {
         console.error('Register error:', error)
         notify({
             color: 'negative',
-            message: 'Une erreur est survenue',
+            message: t('error_occurred'),
             icon: 'error'
         })
     }

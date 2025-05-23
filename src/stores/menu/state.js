@@ -1,5 +1,6 @@
 export default () => ({
     isMenuOpen: false,
     isMobileMode: true,
-    selectedFlag: null
+    selectedFlag: null,
+    selectedLanguage: 'fr'
 })

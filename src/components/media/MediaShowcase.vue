@@ -2,18 +2,18 @@
     <div class="media-showcase bg-secondary q-pa-md rounded-borders">
         <div class="row items-center justify-between q-mb-md">
             <h2 class="text-h6 text-dark q-my-none">{{ title }}</h2>
-            <q-btn v-if="showViewAll" flat color="primary" :to="viewAllRoute" label="Voir tout" />
+            <q-btn v-if="showViewAll" :label="$t('view_all')" :to="viewAllRoute" color="primary" flat />
         </div>
 
         <div class="row no-wrap overflow-auto">
             <div v-for="media in displayedMedia" :key="media.id" class="q-pa-sm">
-                <MediaCard style="min-height: 280px; width: 150px" :media="media" @click="$emit('media-click', media)" />
+                <MediaCard :media="media" style="min-height: 280px; width: 150px" @click="$emit('media-click', media)" />
             </div>
         </div>
     </div>
 </template>
 
-<script setup lang="js">
+<script lang="js" setup>
 import { computed } from 'vue'
 import MediaCard from './MediaCard.vue'
 

@@ -5,7 +5,7 @@
             <MediaShowcase v-if="inProgressMedia.length" :medias="inProgressMedia" :title="$t('watching')" class="q-mb-lg" />
 
             <!-- Following Users' Activity -->
-            <MediaShowcase v-if="followingActivity.length" :medias="followingActivity" title="Activité des amis" class="q-mb-lg" />
+            <MediaShowcase v-if="followingActivity.length" :medias="followingActivity" :title="$t('friends_activity')" class="q-mb-lg" />
 
             <!-- Recommendations -->
             <MediaShowcase v-if="recommendations.length" :medias="recommendations" :title="$t('recommendations')" class="q-mb-lg" />
@@ -15,15 +15,15 @@
         <MediaShowcase :medias="trendingMedia" :title="$t('trending')" class="q-mb-lg" />
 
         <!-- Top Media by Category -->
-        <MediaShowcase :medias="topMovies" :title="$t('topmovies')" :show-view-all="true" view-all-route="top/movies" class="q-mb-lg" />
-        <MediaShowcase :medias="topSeries" :title="$t('topseries')" :show-view-all="true" view-all-route="top/series" class="q-mb-lg" />
-        <MediaShowcase :medias="topAnime" :title="$t('topanime')" :show-view-all="true" view-all-route="top/anime" class="q-mb-lg" />
-        <MediaShowcase :medias="topCartoons" :title="$t('topcartoons')" :show-view-all="true" view-all-route="top/cartoons" class="q-mb-lg" />
+        <MediaShowcase :medias="topMovies" :show-view-all="true" :title="$t('topmovies')" class="q-mb-lg" view-all-route="top/movies" />
+        <MediaShowcase :medias="topSeries" :show-view-all="true" :title="$t('topseries')" class="q-mb-lg" view-all-route="top/series" />
+        <MediaShowcase :medias="topAnimes" :show-view-all="true" :title="$t('topanimes')" class="q-mb-lg" view-all-route="top/anime" />
+        <MediaShowcase :medias="topCartoons" :show-view-all="true" :title="$t('topcartoons')" class="q-mb-lg" view-all-route="top/cartoons" />
     </q-page>
 </template>
 
-<script setup lang="js">
-import { onMounted, computed } from 'vue'
+<script lang="js" setup>
+import { computed, onMounted } from 'vue'
 import { useMediaStore } from 'stores/media'
 import { useAuthStore } from 'stores/auth'
 import { useUserStore } from 'stores/user'
@@ -37,7 +37,7 @@ const isLogged = computed(() => authStore.isLogged)
 const trendingMedia = computed(() => mediaStore.getTrendingMedia)
 const topMovies = computed(() => mediaStore.getTopMovies)
 const topSeries = computed(() => mediaStore.getTopSeries)
-const topAnime = computed(() => mediaStore.getTopAnimes)
+const topAnimes = computed(() => mediaStore.getTopAnimes)
 const topCartoons = computed(() => mediaStore.getTopCartoons)
 
 const inProgressMedia = computed(() => {
