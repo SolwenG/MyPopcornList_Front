@@ -1,0 +1,10 @@
+.env
+node_modules
+dist
+.idea
+.git
+.github
+.gitignore
+*.log
+*.tmp
+.coverage
