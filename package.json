@@ -32,7 +32,7 @@
         "@babel/preset-env": "^7.27.2",
         "@eslint/js": "^9.27.0",
         "@intlify/unplugin-vue-i18n": "^6.0.8",
-        "@pinia/testing": "^1.0.1",
+        "@pinia/testing": "^1.0.2",
         "@quasar/app-vite": "^2.2.0",
         "@vue/babel-plugin-jsx": "^1.4.0",
         "@vue/babel-preset-jsx": "^1.4.0",
